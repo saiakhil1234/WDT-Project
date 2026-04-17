@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebQuiz Arena — Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --bg: #060612;
+            --bg2: #0d0d22;
+            --surface: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.07);
+            --accent: #e8ff00;
+            --accent2: #00d4ff;
+            --accent3: #ff4d6d;
+            --text: #f0f0ff;
+            --muted: rgba(240, 240, 255, 0.45);
+            --card-hover: rgba(255, 255, 255, 0.07);
+            --html-color: #ff6b35;
+            --css-color: #264de4;
+            --js-color: #f7df1e;
+            --radius: 16px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f0ff;
+            --bg2: #e8e8f8;
+            --surface: rgba(0, 0, 0, 0.04);
+            --border: rgba(0, 0, 0, 0.08);
+            --text: #0a0a1a;
+            --muted: rgba(10, 10, 26, 0.5);
+            --card-hover: rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── Noise + mesh background ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 20%, rgba(232, 255, 0, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 70% at 85% 80%, rgba(0, 212, 255, 0.09) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255, 77, 109, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── NAVBAR ─── */
+        .navbar {
+            background: rgba(6, 6, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+
+        [data-theme="light"] .navbar {
+            background: rgba(240, 240, 255, 0.85);
+        }
+
+        .navbar-brand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            color: var(--accent) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand span {
+            color: var(--text);
+        }
+
+        .nav-link {
+            color: var(--muted) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem !important;
+            border-radius: 8px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text) !important;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: #000 !important;
+            font-weight: 700;
+            padding: 0.45rem 1.2rem !important;
+            border-radius: 8px;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(232, 255, 0, 0.4);
+        }
+
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 0.4rem 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            padding: 5rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(232, 255, 0, 0.1);
+            border: 1px solid rgba(232, 255, 0, 0.3);
+            border-radius: 100px;
+            padding: 0.3rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(232, 255, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(232, 255, 0, 0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(3.5rem, 9vw, 7rem);
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title .line2 {
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(232, 255, 0, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(232, 255, 0, 0.4);
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: var(--accent2);
+            color: var(--accent2);
+            transform: translateY(-2px);
+        }
+
+        /* ─── ANIMATED STATS ─── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 5rem;
+        }
+
+        .stat-cell {
+            background: var(--bg2);
+            padding: 1.8rem;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .stat-cell:hover {
+            background: var(--card-hover);
+        }
+
+        .stat-num {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.8rem;
+            line-height: 1;
+            color: var(--accent);
+            display: block;
+        }
+
+        .stat-lbl {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.3rem;
+        }
+
+        /* ─── SEARCH ─── */
+        .search-section {
+            margin-bottom: 3rem;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            background: rgba(232, 255, 0, 0.04);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .filter-tag {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--muted);
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* ─── SECTION TITLES ─── */
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.6rem;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-sub {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ─── CATEGORY CARDS ─── */
+        .category-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .category-card.html::before {
+            background: radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 60%);
+        }
+
+        .category-card.css::before {
+            background: radial-gradient(circle at 80% 20%, rgba(38, 77, 228, 0.2) 0%, transparent 60%);
+        }
+
+        .category-card.js::before {
+            background: radial-gradient(circle at 80% 20%, rgba(247, 223, 30, 0.15) 0%, transparent 60%);
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--card-accent-color);
+        }
+
+        .category-card.html {
+            --card-accent-color: var(--html-color);
+        }
+
+        .category-card.css {
+            --card-accent-color: var(--css-color);
+        }
+
+        .category-card.js {
+            --card-accent-color: var(--js-color);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 0;
+        }
+
+        .html .category-icon {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--html-color);
+        }
+
+        .css .category-icon {
+            background: rgba(38, 77, 228, 0.15);
+            color: var(--css-color);
+        }
+
+        .js .category-icon {
+            background: rgba(247, 223, 30, 0.15);
+            color: var(--js-color);
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--text);
+        }
+
+        .category-desc {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-pill {
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 0.2rem 0.7rem;
+            color: var(--muted);
+        }
+
+        .category-arrow {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            opacity: 0;
+            transition: all 0.3s;
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1rem;
+        }
+
+        .category-card:hover .category-arrow {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        /* ─── CAROUSEL ─── */
+        .carousel-section {
+            margin-bottom: 5rem;
+        }
+
+        .quiz-tip-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-text {
+            color: var(--muted);
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            background-color: var(--accent);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: none;
+            opacity: 0.4;
+        }
+
+        .carousel-indicators .active {
+            opacity: 1;
+        }
+
+        /* ─── LEADERBOARD ─── */
+        .leaderboard-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .lb-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lb-title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .lb-badge {
+            background: rgba(232, 255, 0, 0.1);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 100px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lb-row {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .lb-row:last-child {
+            border-bottom: none;
+        }
+
+        .lb-row:hover {
+            background: var(--card-hover);
+        }
+
+        .lb-rank {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            width: 28px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .lb-rank.gold {
+            color: #ffd700;
+        }
+
+        .lb-rank.silver {
+            color: #c0c0c0;
+        }
+
+        .lb-rank.bronze {
+            color: #cd7f32;
+        }
+
+        .lb-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .lb-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .lb-score {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .lb-bar-wrap {
+            flex: 1;
+            max-width: 100px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .lb-bar {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--accent2), var(--accent));
+            transition: width 1s ease;
+        }
+
+        /* ─── RECENT ACTIVITY ─── */
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .activity-dot.html {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--html-color);
+        }
+
+        .activity-dot.css {
+            background: rgba(38, 77, 228, 0.15);
+            color: var(--css-color);
+        }
+
+        .activity-dot.js {
+            background: rgba(247, 223, 30, 0.15);
+            color: var(--js-color);
+        }
+
+        .activity-meta {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .activity-score {
+            margin-left: auto;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        /* ─── FOOTER ─── */
+        .footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0 2rem;
+            margin-top: 5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-brand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.6rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-tagline {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .social-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .social-icon:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* ─── ANIMATIONS ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+
+        /* ─── MODAL ─── */
+        .modal-content {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        [data-theme="light"] .btn-close {
+            filter: none;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media(max-width:768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media(max-width:576px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* ─── CURSOR GLOW ─── */
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(circle, rgba(232, 255, 0, 0.04) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: left 0.1s, top 0.1s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">WEB<span>QUIZ</span> <span
+                    style="color:var(--accent)">ARENA</span></a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                style="color:var(--text)">
+                <i class="bi bi-list" style="font-size:1.5rem;"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto ms-4 gap-1">
+                    <li class="nav-item"><a class="nav-link active" href="home.html"><i
+                                class="bi bi-house me-1"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz-html.html"><i
+                                class="bi bi-code-slash me-1"></i>HTML</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz-css.html"><i
+                                class="bi bi-brush me-1"></i>CSS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz-js.html"><i
+                                class="bi bi-braces me-1"></i>JavaScript</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                        <i class="bi bi-sun-fill" id="themeIcon"></i>
+                    </button>
+                    <button class="btn-primary-custom" style="padding:0.45rem 1.2rem;font-size:0.85rem;"
+                        data-bs-toggle="modal" data-bs-target="#quickStartModal">
+                        Quick Start <i class="bi bi-lightning-fill ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+
+        <!-- ═══ HERO ═══ -->
+        <section class="hero container">
+            <div class="animate__animated animate__fadeInDown">
+                <div class="hero-badge"><i class="bi bi-lightning-fill"></i> Live Competition Active</div>
+            </div>
+            <h1 class="hero-title animate__animated animate__fadeInUp animate__delay-1s">
+                TEST YOUR<br><span class="line2">WEB SKILLS</span><br>WIN THE ARENA
+            </h1>
+            <p class="hero-sub animate__animated animate__fadeIn animate__delay-1s">
+                Compete in HTML, CSS & JavaScript quizzes. Beat the clock, climb the leaderboard, dominate the web.
+            </p>
+            <div class="hero-btns animate__animated animate__fadeInUp animate__delay-1s">
+                <button class="btn-primary-custom" onclick="location.href='quiz-html.html'">Start Competing <i
+                        class="bi bi-arrow-right ms-1"></i></button>
+                <button class="btn-outline-custom" data-bs-toggle="modal" data-bs-target="#howItWorksModal">How It Works
+                    <i class="bi bi-play-circle ms-1"></i></button>
+            </div>
+        </section>
+
+        <!-- ═══ ANIMATED STATS ═══ -->
+        <section class="container mb-5">
+            <div class="stats-row reveal" id="statsRow">
+                <div class="stat-cell">
+                    <span class="stat-num" data-count="12847">0</span>
+                    <div class="stat-lbl">Active Users</div>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-num" data-count="450">0</span>
+                    <div class="stat-lbl">Questions</div>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-num" data-count="98">0</span>
+                    <div class="stat-lbl">% Satisfaction</div>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-num" data-count="3200">0</span>
+                    <div class="stat-lbl">Quizzes Taken</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ SEARCH & FILTER ═══ -->
+        <section class="container search-section reveal">
+            <div class="text-center mb-3">
+                <div class="section-label">Find Your Quiz</div>
+                <h2 class="section-title">SEARCH & FILTER</h2>
+            </div>
+            <div class="search-box">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search quizzes by topic..."
+                    oninput="filterQuizzes()">
+            </div>
+            <div class="filter-tags mt-3">
+                <button class="filter-tag active" onclick="setFilter('all',this)">All</button>
+                <button class="filter-tag" onclick="setFilter('html',this)">HTML</button>
+                <button class="filter-tag" onclick="setFilter('css',this)">CSS</button>
+                <button class="filter-tag" onclick="setFilter('js',this)">JavaScript</button>
+                <button class="filter-tag" onclick="setFilter('beginner',this)">Beginner</button>
+                <button class="filter-tag" onclick="setFilter('advanced',this)">Advanced</button>
+            </div>
+        </section>
+
+        <!-- ═══ CATEGORY CARDS ═══ -->
+        <section class="container mb-5">
+            <div class="row g-3 mb-2">
+                <div class="col-12">
+                    <div class="section-label reveal">Choose Your Battle</div>
+                    <h2 class="section-title reveal reveal-delay-1">QUIZ CATEGORIES</h2>
+                    <p class="section-sub reveal reveal-delay-2">Pick a category and prove your mastery</p>
+                </div>
+            </div>
+            <div class="row g-4" id="categoryGrid">
+                <!-- HTML Card -->
+                <div class="col-md-4 reveal" data-category="html" data-level="all">
+                    <a href="quiz-html.html" class="category-card html">
+                        <div class="category-icon">&#60;/&#62;</div>
+                        <div class="category-title">HTML Mastery</div>
+                        <div class="category-desc">Test your knowledge of semantic HTML, forms, accessibility, and
+                            document structure.</div>
+                        <div class="category-meta">
+                            <span class="meta-pill"><i class="bi bi-question-circle me-1"></i>20 Questions</span>
+                            <span class="meta-pill"><i class="bi bi-clock me-1"></i>10 Mins</span>
+                            <span class="meta-pill"><i class="bi bi-bar-chart me-1"></i>Mixed</span>
+                        </div>
+                        <div class="category-arrow"><i class="bi bi-arrow-right"></i></div>
+                    </a>
+                </div>
+                <!-- CSS Card -->
+                <div class="col-md-4 reveal reveal-delay-1" data-category="css" data-level="all">
+                    <a href="quiz-css.html" class="category-card css">
+                        <div class="category-icon" style="font-size:1.2rem;">CSS</div>
+                        <div class="category-title">CSS Wizardry</div>
+                        <div class="category-desc">Challenge yourself with Flexbox, Grid, animations, and advanced
+                            selectors.</div>
+                        <div class="category-meta">
+                            <span class="meta-pill"><i class="bi bi-question-circle me-1"></i>20 Questions</span>
+                            <span class="meta-pill"><i class="bi bi-clock me-1"></i>10 Mins</span>
+                            <span class="meta-pill"><i class="bi bi-bar-chart me-1"></i>Mixed</span>
+                        </div>
+                        <div class="category-arrow"><i class="bi bi-arrow-right"></i></div>
+                    </a>
+                </div>
+                <!-- JS Card -->
+                <div class="col-md-4 reveal reveal-delay-2" data-category="js" data-level="all">
+                    <a href="quiz-js.html" class="category-card js">
+                        <div class="category-icon" style="font-size:1.2rem;">JS</div>
+                        <div class="category-title">JavaScript Pro</div>
+                        <div class="category-desc">Tackle closures, async/await, DOM manipulation, and ES6+ features
+                            head-on.</div>
+                        <div class="category-meta">
+                            <span class="meta-pill"><i class="bi bi-question-circle me-1"></i>20 Questions</span>
+                            <span class="meta-pill"><i class="bi bi-clock me-1"></i>10 Mins</span>
+                            <span class="meta-pill"><i class="bi bi-bar-chart me-1"></i>Mixed</span>
+                        </div>
+                        <div class="category-arrow"><i class="bi bi-arrow-right"></i></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ CAROUSEL (Tips & Highlights) ═══ -->
+        <section class="container carousel-section reveal">
+            <div class="section-label">Pro Tips & Highlights</div>
+            <h2 class="section-title reveal-delay-1">ARENA INSIGHTS</h2>
+            <div id="tipsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#tipsCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#tipsCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#tipsCarousel" data-bs-slide-to="2"></button>
+                    <button type="button" data-bs-target="#tipsCarousel" data-bs-slide-to="3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="quiz-tip-card">
+                            <div class="tip-icon">🏆</div>
+                            <div class="tip-title">TOP SCORE THIS WEEK</div>
+                            <div class="tip-text">@devmaster_99 scored 100% on JavaScript Pro in 4:32 minutes. Can you
+                                beat it?</div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="quiz-tip-card">
+                            <div class="tip-icon">💡</div>
+                            <div class="tip-title">HTML TIP OF THE DAY</div>
+                            <div class="tip-text">Use semantic elements like &lt;article&gt;, &lt;section&gt;,
+                                &lt;aside&gt; for better SEO and accessibility scores.</div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="quiz-tip-card">
+                            <div class="tip-icon">⚡</div>
+                            <div class="tip-title">CSS POWER MOVE</div>
+                            <div class="tip-text">CSS Grid's <code style="color:var(--accent)">subgrid</code> is now
+                                baseline in all major browsers. Master it before your next quiz!</div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="quiz-tip-card">
+                            <div class="tip-icon">🔥</div>
+                            <div class="tip-title">JS CHALLENGE UNLOCKED</div>
+                            <div class="tip-text">New "Closures & Scope" section added to JS Pro quiz. 80% of users fail
+                                it on their first try. Are you ready?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ LEADERBOARD + ACTIVITY ═══ -->
+        <section class="container mb-5">
+            <div class="row g-4">
+                <!-- Leaderboard -->
+                <div class="col-lg-6 reveal">
+                    <div class="section-label">Hall of Fame</div>
+                    <h2 class="section-title">LEADERBOARD</h2>
+                    <div class="leaderboard-card">
+                        <div class="lb-header">
+                            <span class="lb-title"><i class="bi bi-trophy-fill me-2" style="color:var(--accent)"></i>Top
+                                Players</span>
+                            <span class="lb-badge">Live</span>
+                        </div>
+                        <div id="leaderboardList"></div>
+                    </div>
+                </div>
+                <!-- Recent Activity -->
+                <div class="col-lg-6 reveal reveal-delay-1">
+                    <div class="section-label">What's Happening</div>
+                    <h2 class="section-title">RECENT ACTIVITY</h2>
+                    <div class="leaderboard-card">
+                        <div class="lb-header">
+                            <span class="lb-title"><i class="bi bi-activity me-2" style="color:var(--accent2)"></i>Quiz
+                                Feed</span>
+                            <span class="lb-badge"
+                                style="background:rgba(0,212,255,0.1);color:var(--accent2)">Live</span>
+                        </div>
+                        <div id="activityFeed"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- end main-content -->
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="footer-brand">WEBQUIZ ARENA</div>
+                    <div class="footer-tagline">Master the web, one question at a time.<br>Compete. Learn. Dominate.
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="footer-title">Quizzes</div>
+                    <a href="quiz-html.html" class="footer-link">HTML Quiz</a>
+                    <a href="quiz-css.html" class="footer-link">CSS Quiz</a>
+                    <a href="quiz-js.html" class="footer-link">JS Quiz</a>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="footer-title">Platform</div>
+                    <a href="home.html" class="footer-link">Home</a>
+                    <a href="user-portal.html" class="footer-link">User Portal</a>
+                    <a href="admin.html" class="footer-link">Admin</a>
+                </div>
+                <div class="col-lg-4">
+                    <div class="footer-title">Stay Sharp</div>
+                    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.8rem;">Get weekly quiz updates &
+                        tips.</p>
+                    <div class="d-flex gap-2">
+                        <input type="email" class="search-input" style="flex:1;padding:0.6rem 1rem;"
+                            placeholder="your@email.com">
+                        <button class="btn-primary-custom"
+                            style="padding:0.6rem 1rem;font-size:0.85rem;white-space:nowrap;">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2025 WebQuiz Arena. All rights reserved.</span>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-discord"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══ QUICK START MODAL ═══ -->
+    <div class="modal fade" id="quickStartModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title"
+                        style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:0.05em;">QUICK START
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;">Choose a quiz and jump straight
+                        in. Timer starts immediately!</p>
+                    <div class="d-grid gap-2">
+                        <a href="quiz-html.html" class="btn"
+                            style="background:rgba(255,107,53,0.15);color:var(--html-color);border:1px solid rgba(255,107,53,0.3);border-radius:10px;font-weight:600;padding:0.8rem;">
+                            <i class="bi bi-code-slash me-2"></i>HTML Mastery Quiz
+                        </a>
+                        <a href="quiz-css.html" class="btn"
+                            style="background:rgba(38,77,228,0.15);color:#6488ff;border:1px solid rgba(38,77,228,0.3);border-radius:10px;font-weight:600;padding:0.8rem;">
+                            <i class="bi bi-brush me-2"></i>CSS Wizardry Quiz
+                        </a>
+                        <a href="quiz-js.html" class="btn"
+                            style="background:rgba(247,223,30,0.15);color:var(--js-color);border:1px solid rgba(247,223,30,0.3);border-radius:10px;font-weight:600;padding:0.8rem;">
+                            <i class="bi bi-braces me-2"></i>JavaScript Pro Quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HOW IT WORKS MODAL ═══ -->
+    <div class="modal fade" id="howItWorksModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:0.05em;">HOW IT WORKS
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex gap-3 align-items-start">
+                            <div
+                                style="width:36px;height:36px;background:rgba(232,255,0,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;flex-shrink:0;">
+                                1</div>
+                            <div><strong>Choose a Category</strong>
+                                <p style="color:var(--muted);font-size:0.85rem;margin:0;">Select HTML, CSS, or
+                                    JavaScript based on what you want to test.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 align-items-start">
+                            <div
+                                style="width:36px;height:36px;background:rgba(0,212,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent2);font-weight:800;flex-shrink:0;">
+                                2</div>
+                            <div><strong>Beat the Timer</strong>
+                                <p style="color:var(--muted);font-size:0.85rem;margin:0;">You have 10 minutes to answer
+                                    20 questions. Speed matters!</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 align-items-start">
+                            <div
+                                style="width:36px;height:36px;background:rgba(255,77,109,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent3);font-weight:800;flex-shrink:0;">
+                                3</div>
+                            <div><strong>Get Instant Feedback</strong>
+                                <p style="color:var(--muted);font-size:0.85rem;margin:0;">Every answer gives you
+                                    immediate feedback and explanation.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 align-items-start">
+                            <div
+                                style="width:36px;height:36px;background:rgba(232,255,0,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;flex-shrink:0;">
+                                4</div>
+                            <div><strong>Climb the Leaderboard</strong>
+                                <p style="color:var(--muted);font-size:0.85rem;margin:0;">Your score is tracked live.
+                                    Compete with players worldwide.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-primary-custom" style="width:100%;" data-bs-dismiss="modal"
+                        onclick="location.href='quiz-html.html'">Let's Go! <i
+                            class="bi bi-lightning-fill ms-1"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ─── Theme Toggle ───
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').className = isDark ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+        }
+
+        // ─── Cursor Glow ───
+        document.addEventListener('mousemove', e => {
+            const g = document.getElementById('cursorGlow');
+            g.style.left = e.clientX + 'px';
+            g.style.top = e.clientY + 'px';
+        });
+
+        // ─── Scroll Reveal ───
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ─── Animated Counters ───
+        function animateCounters() {
+            document.querySelectorAll('.stat-num').forEach(el => {
+                const target = +el.dataset.count;
+                let current = 0;
+                const step = target / 60;
+                const timer = setInterval(() => {
+                    current = Math.min(current + step, target);
+                    el.textContent = Math.floor(current).toLocaleString();
+                    if (current >= target) clearInterval(timer);
+                }, 25);
+            });
+        }
+        const statsObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) { animateCounters(); statsObserver.disconnect(); }
+        }, { threshold: 0.5 });
+        statsObserver.observe(document.getElementById('statsRow'));
+
+        // ─── Leaderboard ───
+        const leaders = [
+            { name: 'devmaster_99', score: 9800, pct: 98, color: '#ffd700', avatar: 'DM' },
+            { name: 'css_ninja', score: 9550, pct: 95, color: '#c0c0c0', avatar: 'CN' },
+            { name: 'html_hero', score: 9200, pct: 92, color: '#cd7f32', avatar: 'HH' },
+            { name: 'js_wizard', score: 8900, pct: 89, color: null, avatar: 'JW' },
+            { name: 'webdev_pro', score: 8700, pct: 87, color: null, avatar: 'WP' },
+            { name: 'code_queen', score: 8400, pct: 84, color: null, avatar: 'CQ' },
+        ];
+        const rankClasses = ['gold', 'silver', 'bronze', '', '', ''];
+        const rankColors = ['#ffd700', '#c0c0c0', '#cd7f32', 'var(--muted)', 'var(--muted)', 'var(--muted)'];
+        const lb = document.getElementById('leaderboardList');
+        leaders.forEach((p, i) => {
+            lb.innerHTML += `
+    <div class="lb-row animate__animated animate__fadeInLeft" style="animation-delay:${i * 0.08}s">
+      <div class="lb-rank ${rankClasses[i]}">${i + 1}</div>
+      <div class="lb-avatar" style="color:${rankColors[i]}">${p.avatar}</div>
+      <div class="lb-name">@${p.name}</div>
+      <div class="lb-bar-wrap"><div class="lb-bar" style="width:${p.pct}%"></div></div>
+      <div class="lb-score">${p.score.toLocaleString()}</div>
+    </div>`;
+        });
+
+        // ─── Activity Feed ───
+        const activities = [
+            { user: '@devmaster_99', action: 'scored 100% on JavaScript Pro', time: '2 min ago', type: 'js' },
+            { user: '@css_ninja', action: 'completed CSS Wizardry in 6:12', time: '5 min ago', type: 'css' },
+            { user: '@html_hero', action: 'beat personal best in HTML Quiz', time: '9 min ago', type: 'html' },
+            { user: '@js_wizard', action: 'unlocked "Closure Master" badge', time: '14 min ago', type: 'js' },
+            { user: '@webdev_pro', action: 'joined WebQuiz Arena', time: '21 min ago', type: 'html' },
+        ];
+        const typeIcons = { html: 'bi-code-slash', css: 'bi-brush', js: 'bi-braces' };
+        const af = document.getElementById('activityFeed');
+        activities.forEach((a, i) => {
+            af.innerHTML += `
+    <div class="activity-item animate__animated animate__fadeInRight" style="animation-delay:${i * 0.1}s">
+      <div class="activity-dot ${a.type}"><i class="bi ${typeIcons[a.type]}"></i></div>
+      <div>
+        <div class="activity-meta"><strong>${a.user}</strong> ${a.action}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`;
+        });
+
+        // ─── Search / Filter ───
+        let activeFilter = 'all';
+        function setFilter(filter, btn) {
+            activeFilter = filter;
+            document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterQuizzes();
+        }
+        function filterQuizzes() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('#categoryGrid [data-category]').forEach(card => {
+                const cat = card.dataset.category;
+                const title = card.querySelector('.category-title').textContent.toLowerCase();
+                const desc = card.querySelector('.category-desc').textContent.toLowerCase();
+                const matchFilter = activeFilter === 'all' || cat === activeFilter || activeFilter === 'beginner' || activeFilter === 'advanced';
+                const matchSearch = !q || title.includes(q) || desc.includes(q) || cat.includes(q);
+                card.style.display = matchFilter && matchSearch ? '' : 'none';
+            });
+        }
+
+        // ─── Live leaderboard pulse ───
+        setInterval(() => {
+            const rows = document.querySelectorAll('.lb-row');
+            const r = rows[Math.floor(Math.random() * rows.length)];
+            r.style.background = 'rgba(232,255,0,0.05)';
+            setTimeout(() => r.style.background = '', 1000);
+        }, 3000);
+    </script>
+</body>
+
+</html>

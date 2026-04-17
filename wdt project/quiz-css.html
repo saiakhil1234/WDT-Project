@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebQuiz Arena — CSS Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --bg: #060614;
+            --bg2: #0a0a1e;
+            --surface: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.07);
+            --accent: #264de4;
+            --accent-light: #6488ff;
+            --accent-soft: rgba(38, 77, 228, 0.15);
+            --accent-glow: rgba(100, 136, 255, 0.35);
+            --correct: #00d97e;
+            --wrong: #ff4d6d;
+            --text: #f0f0ff;
+            --muted: rgba(240, 240, 255, 0.45);
+            --radius: 16px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f4ff;
+            --bg2: #e8eeff;
+            --surface: rgba(38, 77, 228, 0.06);
+            --border: rgba(38, 77, 228, 0.15);
+            --text: #060614;
+            --muted: rgba(6, 6, 20, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse 60% 50% at 80% 10%, rgba(38, 77, 228, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 20% 90%, rgba(100, 136, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: rgba(6, 6, 20, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        [data-theme="light"] .navbar {
+            background: rgba(240, 244, 255, 0.9);
+        }
+
+        .navbar-brand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            color: #e8ff00 !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand span {
+            color: var(--text);
+        }
+
+        .nav-link {
+            color: var(--muted) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem !important;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text) !important;
+        }
+
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 0.4rem 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-light);
+            color: var(--accent-light);
+        }
+
+        .quiz-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .quiz-header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header::before {
+            content: 'CSS';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 7rem;
+            color: rgba(100, 136, 255, 0.06);
+            letter-spacing: -0.05em;
+            pointer-events: none;
+        }
+
+        .quiz-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--accent-soft);
+            border: 1px solid rgba(100, 136, 255, 0.3);
+            border-radius: 100px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .quiz-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.3rem;
+        }
+
+        .quiz-sub {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .quiz-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+            letter-spacing: 0.05em;
+            min-width: 90px;
+        }
+
+        .timer-display.warning {
+            color: #ffd700;
+            animation: timerPulse 0.5s ease-in-out infinite alternate;
+        }
+
+        .timer-display.danger {
+            color: var(--wrong);
+            animation: timerPulse 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes timerPulse {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0.6;
+            }
+        }
+
+        .progress-info {
+            flex: 1;
+        }
+
+        .progress-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .progress-bar-wrap {
+            height: 6px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 100px;
+            transition: width 0.5s ease;
+        }
+
+        .score-display {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.4rem;
+            color: var(--correct);
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        .score-lbl {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .q-counter {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.4rem;
+            color: var(--text);
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        .q-counter-lbl {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .question-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            animation: questionIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes questionIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .q-number {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+        }
+
+        .q-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .q-code {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: #e8e8f0;
+            border-left: 3px solid var(--accent-light);
+        }
+
+        .q-code .prop {
+            color: #6488ff;
+        }
+
+        .q-code .val {
+            color: #00d97e;
+        }
+
+        .q-code .sel {
+            color: #ff6b35;
+        }
+
+        .q-code .cm {
+            color: #555;
+        }
+
+        .q-code .unit {
+            color: #ffd700;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-light);
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--accent-soft);
+            color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+
+        .option-btn:hover .option-letter {
+            background: var(--accent-light);
+            color: #000;
+        }
+
+        .option-btn.correct {
+            background: rgba(0, 217, 126, 0.12);
+            border-color: var(--correct);
+            animation: correctPop 0.4s ease;
+        }
+
+        .option-btn.correct .option-letter {
+            background: var(--correct);
+            color: #000;
+        }
+
+        .option-btn.wrong {
+            background: rgba(255, 77, 109, 0.12);
+            border-color: var(--wrong);
+            animation: wrongShake 0.4s ease;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: var(--wrong);
+            color: #fff;
+        }
+
+        @keyframes correctPop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes wrongShake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            transform: none !important;
+        }
+
+        .feedback-box {
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            animation: feedbackIn 0.4s ease;
+        }
+
+        @keyframes feedbackIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-box.correct-fb {
+            background: rgba(0, 217, 126, 0.1);
+            border: 1px solid rgba(0, 217, 126, 0.3);
+        }
+
+        .feedback-box.wrong-fb {
+            background: rgba(255, 77, 109, 0.1);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+        }
+
+        .fb-icon {
+            font-size: 1.3rem;
+            margin-top: 1px;
+        }
+
+        .fb-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .fb-explain {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .correct-fb .fb-title {
+            color: var(--correct);
+        }
+
+        .wrong-fb .fb-title {
+            color: var(--wrong);
+        }
+
+        .btn-next {
+            background: var(--accent-light);
+            color: #000;
+            font-weight: 700;
+            padding: 0.9rem 2.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+        }
+
+        .results-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            animation: questionIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .results-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .results-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-sub {
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-light) calc(var(--pct)*3.6deg), var(--border) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--bg2);
+        }
+
+        .score-inner {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .score-pct {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.2rem;
+            color: var(--accent-light);
+            line-height: 1;
+        }
+
+        .score-frac {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .r-stat {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .r-stat-num {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-light);
+        }
+
+        .r-stat-lbl {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .results-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-brand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.3rem;
+            color: #e8ff00;
+        }
+
+        .footer-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-light);
+        }
+
+        @media(max-width:600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .quiz-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">WEB<span>QUIZ</span> <span style="color:#e8ff00">ARENA</span></a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                style="color:var(--text)">
+                <i class="bi bi-list" style="font-size:1.5rem;"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto ms-4 gap-1">
+                    <li class="nav-item"><a class="nav-link" href="home.html"><i class="bi bi-house me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="quiz-html.html"><i
+                                class="bi bi-code-slash me-1"></i>HTML</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="quiz-css.html"><i
+                                class="bi bi-brush me-1"></i>CSS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz-js.html"><i
+                                class="bi bi-braces me-1"></i>JavaScript</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin.html"><i
+                                class="bi bi-shield-lock me-1"></i>Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="user-portal.html"><i
+                                class="bi bi-person-circle me-1"></i>Portal</a></li>
+                </ul>
+                <button class="theme-toggle" onclick="toggleTheme()"><i class="bi bi-sun-fill"
+                        id="themeIcon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="quiz-wrapper animate__animated animate__fadeIn">
+        <div class="quiz-header animate__animated animate__fadeInDown">
+            <div class="quiz-tag"><i class="bi bi-brush me-1"></i>CSS Wizardry</div>
+            <div class="quiz-title">CSS QUIZ CHALLENGE</div>
+            <div class="quiz-sub">20 questions · 10 minutes · Master flexbox, grid, and beyond</div>
+        </div>
+        <div class="quiz-controls" id="quizControls">
+            <div class="timer-display" id="timerDisplay">
+                <i class="bi bi-clock timer-icon"></i><span id="timerText">10:00</span>
+            </div>
+            <div class="progress-info">
+                <div class="progress-label">Progress — <span id="progressLabel">0 of 20</span></div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="score-display" id="scoreDisplay">0</div>
+                <div class="score-lbl">Score</div>
+            </div>
+            <div class="text-center">
+                <div class="q-counter" id="qCounter">1/20</div>
+                <div class="q-counter-lbl">Question</div>
+            </div>
+        </div>
+        <div id="quizArea"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">WEBQUIZ ARENA</div>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="home.html" class="footer-link">Home</a>
+                    <a href="quiz-html.html" class="footer-link">HTML Quiz</a>
+                    <a href="quiz-js.html" class="footer-link">JS Quiz</a>
+                    <a href="user-portal.html" class="footer-link">My Portal</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleTheme() { const h = document.documentElement, isDark = h.getAttribute('data-theme') === 'dark'; h.setAttribute('data-theme', isDark ? 'light' : 'dark'); document.getElementById('themeIcon').className = isDark ? 'bi bi-moon-fill' : 'bi bi-sun-fill'; }
+
+        const questions = [
+            { q: "What CSS property is used to change the text color of an element?", code: null, opts: ["text-color", "font-color", "color", "foreground-color"], correct: 2, explain: "The 'color' property sets the foreground color of an element's text content and text decorations." },
+            { q: "Which value of 'display' creates a flex container?", code: null, opts: ["block", "grid", "flex", "inline-flex"], correct: 2, explain: "display:flex creates a block-level flex container. Its direct children become flex items and are laid out using the flexbox model." },
+            { q: "What does this CSS rule do?", code: `<span class="sel">.box</span> {\n  <span class="prop">display</span>: <span class="val">flex</span>;\n  <span class="prop">justify-content</span>: <span class="val">center</span>;\n  <span class="prop">align-items</span>: <span class="val">center</span>;\n}`, opts: ["Stretches the box to full width", "Centers children horizontally only", "Centers children both horizontally and vertically", "Aligns children to the top"], correct: 2, explain: "justify-content:center centers along the main axis (horizontal), align-items:center centers along the cross axis (vertical). Together they center content perfectly." },
+            { q: "Which CSS property creates space inside an element's border?", code: null, opts: ["margin", "spacing", "padding", "border-spacing"], correct: 2, explain: "'padding' creates space inside the border of an element. 'margin' creates space outside. This is fundamental to the CSS box model." },
+            { q: "What is the correct CSS for making all paragraph text bold?", code: null, opts: ["p {text-size:bold}", "p {font-weight:bold}", "p {text-weight:bold}", "p {bold:true}"], correct: 1, explain: "font-weight:bold sets text to bold. Valid values include: normal, bold, bolder, lighter, or numeric values (100-900)." },
+            { q: "What does this Grid CSS define?", code: `<span class="sel">.grid</span> {\n  <span class="prop">display</span>: <span class="val">grid</span>;\n  <span class="prop">grid-template-columns</span>: <span class="val">repeat(<span class="unit">3</span>, <span class="unit">1fr</span>)</span>;\n  <span class="prop">gap</span>: <span class="val"><span class="unit">20px</span></span>;\n}`, opts: ["3 rows of equal height", "3 columns of equal width with 20px gaps", "A 3x3 grid", "3 columns where first is 1px wide"], correct: 1, explain: "repeat(3, 1fr) creates 3 equal-width columns (1fr = 1 fraction of available space). gap:20px adds 20px spacing between both rows and columns." },
+            { q: "Which pseudo-class targets an element when the user hovers over it?", code: null, opts: [":active", ":focus", ":hover", ":visited"], correct: 2, explain: ":hover applies styles when the user positions their pointer over an element. It's one of the most commonly used pseudo-classes." },
+            { q: "What is the CSS Box Model order from inside to outside?", code: null, opts: ["Margin → Border → Padding → Content", "Content → Padding → Border → Margin", "Content → Margin → Padding → Border", "Padding → Content → Border → Margin"], correct: 1, explain: "The CSS Box Model layers from inside out: Content → Padding → Border → Margin. Understanding this is critical for layout control." },
+            { q: "What does 'position: absolute' do?", code: null, opts: ["Fixes element to viewport", "Positions relative to nearest positioned ancestor", "Sticks to the top on scroll", "Floats the element left"], correct: 1, explain: "position:absolute removes an element from normal flow and positions it relative to its nearest ancestor with a position other than 'static'." },
+            { q: "Which CSS unit is relative to the viewport width?", code: null, opts: ["em", "rem", "vw", "px"], correct: 2, explain: "vw (viewport width) is relative to 1% of the browser's viewport width. vh is the equivalent for height. These are great for responsive design." },
+            { q: "What does this animation shorthand define?", code: `<span class="sel">.btn</span> {\n  <span class="prop">animation</span>: <span class="val">spin <span class="unit">2s</span> linear infinite</span>;\n}`, opts: ["Spins once over 2 seconds", "Spins indefinitely, completing a rotation every 2 seconds", "Fades in and out every 2 seconds", "Moves 2px per second"], correct: 1, explain: "The animation shorthand: name=spin, duration=2s, timing=linear (constant speed), iteration-count=infinite (loops forever). Still needs the @keyframes spin definition." },
+            { q: "Which property controls the stacking order of elements?", code: null, opts: ["stack-order", "layer", "z-index", "depth"], correct: 2, explain: "z-index controls the vertical stacking order of positioned elements. Higher values appear in front. Only works on positioned elements (not static)." },
+            { q: "What is a CSS custom property (variable)?", code: `<span class="sel">:root</span> {\n  <span class="prop">--primary-color</span>: <span class="val">#264de4</span>;\n}\n<span class="sel">.button</span> {\n  <span class="prop">background</span>: <span class="val">var(--primary-color)</span>;\n}`, opts: ["A SCSS feature only", "A way to use JavaScript in CSS", "A reusable value defined with -- prefix", "A CSS preprocessor function"], correct: 2, explain: "CSS custom properties (variables) are defined with -- prefix in a scope (often :root). They're reusable throughout the stylesheet via var() and support dynamic updates via JS." },
+            { q: "Which flexbox property controls how flex items wrap?", code: null, opts: ["flex-direction", "flex-wrap", "flex-flow", "align-content"], correct: 1, explain: "flex-wrap controls whether flex items wrap to new lines. Values: nowrap (default), wrap (wraps downward), wrap-reverse (wraps upward)." },
+            { q: "What does the '>' CSS combinator select?", code: `<span class="sel">div > p</span> { <span class="prop">color</span>: <span class="val">blue</span>; }`, opts: ["All p elements on the page", "p elements anywhere inside div", "Only direct p children of div", "p elements that come after div"], correct: 2, explain: "The child combinator (>) selects only direct children. 'div > p' targets p elements that are immediate children of div, not deeply nested ones." },
+            { q: "Which media query applies styles for screens narrower than 768px?", code: null, opts: ["@media (max-width: 768px)", "@media screen > 768px", "@media (min-width: 768px)", "@media width < 768px"], correct: 0, explain: "@media (max-width: 768px) applies styles when the viewport is 768px or narrower. This is the standard mobile-first breakpoint approach." },
+            { q: "What does 'object-fit: cover' do to an image?", code: null, opts: ["Stretches image to fill container", "Scales image to fit while maintaining aspect ratio, cropping excess", "Tiles the image", "Shrinks image to original size"], correct: 1, explain: "object-fit:cover scales the image to cover the container while maintaining aspect ratio, cropping any overflow. Perfect for image cards." },
+            { q: "Which CSS property creates a smooth color transition?", code: `<span class="sel">.btn</span> {\n  <span class="prop">background</span>: <span class="val">blue</span>;\n  <span class="prop">transition</span>: <span class="val">background <span class="unit">0.3s</span> ease</span>;\n}\n<span class="sel">.btn:hover</span> {\n  <span class="prop">background</span>: <span class="val">red</span>;\n}`, opts: ["animation", "transform", "transition", "keyframes"], correct: 2, explain: "The 'transition' property smoothly animates CSS property changes. Format: property duration timing-function delay. This creates a 0.3s ease transition on background-color hover." },
+            { q: "What is CSS Specificity?", code: null, opts: ["How fast CSS is parsed", "A rule for ordering CSS selectors to determine which style wins", "The number of CSS files loaded", "The depth of element nesting"], correct: 1, explain: "Specificity determines which CSS rule applies when multiple rules target the same element. Inline > IDs > Classes/Attributes > Elements. !important overrides all." },
+            { q: "Which CSS function creates a linear gradient?", code: `<span class="sel">.hero</span> {\n  <span class="prop">background</span>: <span class="val">linear-gradient(<span class="unit">135deg</span>, #264de4, #00d97e)</span>;\n}`, opts: ["gradient()", "make-gradient()", "linear-gradient()", "color-gradient()"], correct: 2, explain: "linear-gradient() creates a gradient along a straight line. The first argument is the angle/direction, followed by color stops. It returns an image value." }
+        ];
+
+        let currentQ = 0, score = 0, answered = false, timeLeft = 600, timerInterval = null, userAnswers = [];
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                const disp = document.getElementById('timerDisplay');
+                document.getElementById('timerText').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if (timeLeft <= 60) { disp.className = 'timer-display danger'; } else if (timeLeft <= 120) { disp.className = 'timer-display warning'; }
+                if (timeLeft <= 0) { clearInterval(timerInterval); showResults(); }
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQ]; answered = false;
+            const letters = ['A', 'B', 'C', 'D'];
+            const codeBlock = q.code ? `<div class="q-code">${q.code}</div>` : '';
+            document.getElementById('quizArea').innerHTML = `
+    <div class="question-card">
+      <div class="q-number">Question ${currentQ + 1} of ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${codeBlock}
+      <div class="options-grid" id="optionsGrid">
+        ${q.opts.map((opt, i) => `<button class="option-btn" onclick="selectAnswer(${i})" data-index="${i}"><span class="option-letter">${letters[i]}</span><span>${opt}</span></button>`).join('')}
+      </div>
+    </div>
+    <div id="feedbackArea"></div>
+    <div class="d-flex justify-content-end">
+      <button class="btn-next" id="nextBtn" onclick="nextQuestion()" disabled>
+        ${currentQ === questions.length - 1 ? 'See Results' : 'Next Question'} <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>`;
+            document.getElementById('progressLabel').textContent = `${currentQ} of ${questions.length}`;
+            document.getElementById('progressBar').style.width = `${(currentQ / questions.length) * 100}%`;
+            document.getElementById('scoreDisplay').textContent = score;
+            document.getElementById('qCounter').textContent = `${currentQ + 1}/${questions.length}`;
+        }
+
+        function selectAnswer(idx) {
+            if (answered) return; answered = true;
+            const q = questions[currentQ];
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => b.disabled = true);
+            const isCorrect = idx === q.correct;
+            btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+            if (!isCorrect) btns[q.correct].classList.add('correct');
+            if (isCorrect) score++;
+            userAnswers.push({ q: q.q, chosen: idx, correct: q.correct, isCorrect });
+            document.getElementById('feedbackArea').innerHTML = `
+    <div class="feedback-box ${isCorrect ? 'correct-fb' : 'wrong-fb'}">
+      <div class="fb-icon">${isCorrect ? '✅' : '❌'}</div>
+      <div><div class="fb-title">${isCorrect ? 'Correct! Excellent!' : 'Wrong answer!'}</div><div class="fb-explain">${q.explain}</div></div>
+    </div>`;
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('scoreDisplay').textContent = score;
+        }
+
+        function nextQuestion() {
+            if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); }
+            else { clearInterval(timerInterval); showResults(); }
+        }
+
+        function showResults() {
+            const pct = Math.round((score / questions.length) * 100);
+            let emoji = '😔', grade = 'Keep Styling!';
+            if (pct >= 90) { emoji = '🏆'; grade = 'CSS Master!'; } else if (pct >= 75) { emoji = '🎨'; grade = 'Great Style!'; } else if (pct >= 60) { emoji = '👍'; grade = 'Good Work!'; }
+            const timeTaken = 600 - timeLeft, m = Math.floor(timeTaken / 60), s = timeTaken % 60;
+            document.getElementById('quizControls').style.display = 'none';
+            document.getElementById('quizArea').innerHTML = `
+    <div class="results-card">
+      <span class="results-emoji">${emoji}</span>
+      <div class="results-title">${grade}</div>
+      <div class="results-sub">CSS Quiz Complete!</div>
+      <div class="score-circle" style="--pct:${pct}">
+        <div class="score-inner"><div class="score-pct">${pct}%</div><div class="score-frac">${score}/${questions.length}</div></div>
+      </div>
+      <div class="results-stats">
+        <div class="r-stat"><div class="r-stat-num" style="color:var(--correct)">${score}</div><div class="r-stat-lbl">Correct</div></div>
+        <div class="r-stat"><div class="r-stat-num" style="color:var(--wrong)">${questions.length - score}</div><div class="r-stat-lbl">Wrong</div></div>
+        <div class="r-stat"><div class="r-stat-num">${m}:${s.toString().padStart(2, '0')}</div><div class="r-stat-lbl">Time</div></div>
+      </div>
+      <div class="results-btns">
+        <button class="btn-next" onclick="restartQuiz()" style="background:var(--surface);color:var(--text);border:1px solid var(--border);box-shadow:none;"><i class="bi bi-arrow-clockwise"></i> Try Again</button>
+        <button class="btn-next" onclick="location.href='quiz-js.html'">JS Quiz <i class="bi bi-arrow-right"></i></button>
+        <button class="btn-next" onclick="location.href='home.html'" style="background:var(--surface);color:var(--text);border:1px solid var(--border);box-shadow:none;"><i class="bi bi-house"></i> Home</button>
+      </div>
+    </div>`;
+            const history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+            history.push({ type: 'CSS', score, total: questions.length, pct, date: new Date().toLocaleDateString() });
+            localStorage.setItem('quizHistory', JSON.stringify(history));
+        }
+
+        function restartQuiz() {
+            currentQ = 0; score = 0; answered = false; timeLeft = 600; userAnswers = [];
+            clearInterval(timerInterval);
+            document.getElementById('quizControls').style.display = '';
+            document.getElementById('timerDisplay').className = 'timer-display';
+            renderQuestion(); startTimer();
+        }
+
+        renderQuestion(); startTimer();
+    </script>
+</body>
+
+</html>
